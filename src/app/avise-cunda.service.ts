@@ -9,15 +9,8 @@ import 'rxjs-compat/add/operator/map';
 })
 export class AviseCundaService {
 
-    eans: string[];
-    fields: any[] = [['barcode','classificationNumber','codeNumber','itemNumber','productId',
-        'productColourId','pricedProductId','advertNumber','outfitId','photoId','viewId','colourId',
-        'advertDate','division','downwelt','kategorie','notes','productName','webshopBeschreibung','welt',
-        'colourPositionNumber','computerSizeNumber','customerSizeNumber','storyIdDescription','licenseIdDescription',
-        'environmentalIdDescription','brandDescription','arvatoStatus','arvatoStatusName','dataSource'
-    ]];
-    errors: any[] = [];
-    csvdata = '';
+
+
     url_hub1: string;
     url_hub2_product: string;
     url_hub2_color: string;

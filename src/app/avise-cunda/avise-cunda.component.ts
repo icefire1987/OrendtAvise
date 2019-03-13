@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AviseCundaService} from '../avise-cunda.service';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {MatTable} from '@angular/material';
 
 
 @Component({
@@ -15,26 +16,38 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 export class AviseCundaComponent implements OnInit {
 
     @ViewChild('downloadbutton') downloadbutton: ElementRef;
-
+    @ViewChild('tableErrors') table: MatTable<any>;
     isLinear = false;
     firstFormGroup: FormGroup;
     secondFormGroup: FormGroup;
     thirdFormGroup: FormGroup;
-    stylelist: any;
+    stylelist: any = {
+        all: [],
+        ok: [],
+        err: []
+    };
     input_stylelist: string;
     csv_string: string;
     csvdata: string;
     safeURL: SafeUrl;
+    fields: any[] = ['barcode','classificationNumber','codeNumber','itemNumber','productId',
+        'productColourId','pricedProductId','advertNumber','outfitId','photoId','viewId','colourId',
+        'advertDate','division','downwelt','kategorie','notes','productName','webshopBeschreibung','welt',
+        'colourPositionNumber','computerSizeNumber','customerSizeNumber','storyIdDescription','licenseIdDescription',
+        'environmentalIdDescription','brandDescription','arvatoStatus','arvatoStatusName','dataSource'
+    ];
+    columnsToDisplay = ['ean', 'message'];
 
     constructor(private _formBuilder: FormBuilder, private serviceCunda: AviseCundaService, private sanitizer: DomSanitizer ) {
+    }
+
+    ngOnInit() {
         this.stylelist = {
             all: [],
             ok: [],
             err: []
         };
-    }
 
-    ngOnInit() {
         this.firstFormGroup = this._formBuilder.group({
             stylelistCtrl: ['', Validators.required]
         });
@@ -48,7 +61,7 @@ export class AviseCundaComponent implements OnInit {
 
     pad_with_zeroes(number, length) {
 
-        var my_string = '' + number;
+        let my_string = '' + number;
         while (my_string.length < length) {
             my_string = '0' + my_string;
         }
@@ -58,6 +71,11 @@ export class AviseCundaComponent implements OnInit {
     }
 
     readList() {
+        this.stylelist = {
+            all: [],
+            ok: [],
+            err: []
+        };
         this.stylelist.all = this.input_stylelist.split("\n");
         this.stylelist.all.forEach((ean,key,arr) => {
             ean = this.pad_with_zeroes(ean,13);
@@ -67,17 +85,17 @@ export class AviseCundaComponent implements OnInit {
                             if (data.length > 1) {
                                 this.stylelist.ok.push(data);
                             } else {
-                                this.stylelist.err.push(ean);
+                                this.stylelist.err.push({ean: ean, message: data.message});
+                                this.table.renderRows();
                             }
-                            console.log(key);
 
-                            if(key==arr.length-1){
+                            if (key === arr.length - 1) {
                                 this.writeCSV();
                             }
                     },
                 error => {
-                        console.log(error.statusText);
-                        this.stylelist.err.push(ean);
+                        this.stylelist.err.push({ean: ean, message: error.statusText});
+                    this.table.renderRows();
                     });
         });
 
@@ -85,26 +103,28 @@ export class AviseCundaComponent implements OnInit {
 
     writeCSV(){
         this.csv_string = "";
+        if (!this.csv_string.match(/^data:text\/csv/i)) {
+            this.csv_string = 'data:text/csv;charset=utf-8,' + this.csv_string;
+        }
+        this.fields.forEach( cell => {
+            this.csv_string += cell + ';';
+        }) ;
+        this.csv_string += '\n';
         this.stylelist.ok.forEach( row => {
-            console.log(row)
             row.forEach( cell => {
-                console.log(cell)
                 this.csv_string += cell + ';';
             }) ;
             this.csv_string += '\n';
         });
+
         if (this.csv_string == null) return;
 
-        if (!this.csv_string.match(/^data:text\/csv/i)) {
-            this.csv_string = 'data:text/csv;charset=utf-8,' + this.csv_string;
-        }
         this.csvdata = encodeURI(this.csv_string);
         this.safeURL = this.sanitizer.bypassSecurityTrustUrl(this.csvdata);
     }
+
     sendCSV() {
-        this.csvdata = encodeURI(this.csv_string);
-        this.downloadbutton.nativeElement.setAttribute("href", this.csvdata);
-        this.downloadbutton.nativeElement.style.color = "green";
+        console.info("cooming soon");
 
 
     }
