@@ -12,7 +12,6 @@ import {MatTable} from '@angular/material';
 })
 
 
-
 export class AviseCundaComponent implements OnInit {
 
     @ViewChild('downloadbutton') downloadbutton: ElementRef;
