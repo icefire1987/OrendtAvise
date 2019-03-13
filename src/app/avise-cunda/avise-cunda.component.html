@@ -1,0 +1,44 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Liste der EANs</ng-template>
+      <mat-form-field>
+        <textarea matInput placeholder="EANs einfügen" formControlName="stylelistCtrl" required [(ngModel)]="input_stylelist"></textarea>
+      </mat-form-field>
+      <div>
+        <button mat-flat-button color="primary" matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Avisedaten laden</ng-template>
+      <div>
+        <button mat-flat-button color="warn" (click)="readList()" >Artikel einlesen</button>
+      </div>
+      <div>
+
+        <h3>Ergebnis</h3>
+        <mat-progress-bar color="primary" mode="determinante" value="{{ ((this.stylelist.ok.length+this.stylelist.err.length)*100) / this.stylelist.all.length }}"></mat-progress-bar>
+        <ul>
+          <li>Zeilen:{{this.stylelist.all.length}}</li>
+          <li>OK:{{this.stylelist.ok.length}} </li>
+          <li>Fehlerhaft:{{this.stylelist.err.length}}</li>
+        </ul>
+      </div>
+      <div>
+        <button mat-flat-button color="primary" matStepperNext disabled="{{this.stylelist.ok.length<1}}" (click)="writeCSV()">Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="thirdFormGroup">
+    <form [formGroup]="thirdFormGroup">
+      <ng-template matStepLabel>Avise-CSV erstellen</ng-template>
+      <div>
+        <a [href]="this.safeURL" mat-flat-button color="accent" #downloadbutton download="cunda_avise.csv">CSV für {{this.stylelist.ok.length}} Artikel herunterladen</a>
+        <button mat-flat-button color="warn" (click)="sendCSV()" #sendbutton>CSV für {{this.stylelist.ok.length}} Artikel an Verteiler senden</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>
+{{this.csv_string}}

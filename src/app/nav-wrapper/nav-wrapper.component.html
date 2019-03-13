@@ -1,0 +1,21 @@
+<div class="wrapper">
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Studio Avisierung</span>
+    <span class="toolbar-spacer"></span>
+    <mat-icon>verified_user</mat-icon>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened #sidenav>
+    <mat-nav-list>
+      <a mat-list-item routerLink="/home" routerLinkActive="active">Home</a>
+      <a mat-list-item routerLink="/cunda" routerLinkActive="active">C&A</a>
+
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+</div>
