@@ -92,7 +92,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIn0= */"
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiIuLi9zcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIn0= */"
 
 /***/ }),
 
@@ -300,6 +300,39 @@ var AviseCundaService = /** @class */ (function () {
             }
         }));
     };
+    AviseCundaService.prototype.get_hub2 = function (data) {
+        return this.http.get(this.url_hub2_product + data.productId +
+            this.url_hub2_color + data.productColourId +
+            this.url_hub2_size + data.computerSizeNumber)
+            .map(function (res2) {
+            return [
+                data.ean,
+                res2.class,
+                res2.code,
+                data.ean.substr(-11, 6),
+                data.productId,
+                data.productColourId,
+                '',
+                res2.advertNumber,
+                "", "", "", "",
+                res2.advertDate,
+                res2.division,
+                res2.downWorld,
+                res2.category,
+                JSON.stringify(res2.erpAdditionalInformation),
+                res2.pimProductName,
+                "",
+                res2.world,
+                data.productColourId,
+                data.computerSizeNumber,
+                res2.customerSize,
+                "", "",
+                res2.erpProductDescription,
+                "", "115", "NewArticle",
+                ""
+            ];
+        });
+    };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])('downloadbutton'),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"])
@@ -324,7 +357,7 @@ var AviseCundaService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2F2aXNlLWN1bmRhL2F2aXNlLWN1bmRhLmNvbXBvbmVudC5jc3MifQ== */"
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiIuLi9zcmMvYXBwL2F2aXNlLWN1bmRhL2F2aXNlLWN1bmRhLmNvbXBvbmVudC5jc3MifQ== */"
 
 /***/ }),
 
@@ -335,7 +368,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-horizontal-stepper [linear]=\"true\" #stepper>\n  <mat-step [stepControl]=\"firstFormGroup\">\n    <form [formGroup]=\"firstFormGroup\">\n      <ng-template matStepLabel>Liste der EANs</ng-template>\n      <mat-form-field>\n        <textarea matInput placeholder=\"EANs einfügen\" formControlName=\"stylelistCtrl\" required matTextareaAutosize matAutosizeMaxRows=20 [(ngModel)]=\"input_stylelist\"></textarea>\n      </mat-form-field>\n      <div>\n        <button mat-flat-button color=\"primary\" matStepperNext>Next</button>\n      </div>\n    </form>\n  </mat-step>\n  <mat-step [stepControl]=\"secondFormGroup\">\n    <form [formGroup]=\"secondFormGroup\">\n      <ng-template matStepLabel>Avisedaten laden</ng-template>\n      <div>\n        <button mat-flat-button color=\"warn\" (click)=\"readList()\" >Artikel einlesen</button>\n      </div>\n      <div>\n\n        <h3>Ergebnis</h3>\n        <mat-progress-bar color=\"primary\" mode=\"determinante\" value=\"{{ ((this.stylelist.ok.length+this.stylelist.err.length)*100) / this.stylelist.all.length }}\"></mat-progress-bar>\n        <ul>\n          <li>Zeilen:{{this.stylelist.all.length}}</li>\n          <li>OK:{{this.stylelist.ok.length}} </li>\n          <li>Fehlerhaft:{{this.stylelist.err.length}}</li>\n\n        </ul>\n        <div>\n          <button mat-flat-button color=\"primary\" matStepperNext disabled=\"{{this.stylelist.ok.length<1}}\" (click)=\"writeCSV()\">Next</button>\n        </div>\n\n      </div>\n\n\n    </form>\n  </mat-step>\n  <mat-step [stepControl]=\"thirdFormGroup\">\n    <form [formGroup]=\"thirdFormGroup\">\n      <ng-template matStepLabel>Avise-CSV erstellen</ng-template>\n      <div>\n        <a [href]=\"this.safeURL\" mat-flat-button color=\"accent\" #downloadbutton download=\"cunda_avise.csv\">CSV für {{this.stylelist.ok.length}} Artikel herunterladen</a>\n        <!--<button mat-flat-button color=\"warn\" (click)=\"sendCSV()\" #sendbutton>CSV für {{this.stylelist.ok.length}} Artikel an Verteiler senden</button>-->\n      </div>\n    </form>\n  </mat-step>\n</mat-horizontal-stepper>\n<mat-card>\n  <mat-card-header>\n    <mat-card-title>Fehlerhafte EANs</mat-card-title>\n  </mat-card-header>\n  <mat-card-content>\n    <table mat-table  class=\"mat-elevation-z8\"  [dataSource]=this.stylelist.err #tableErrors>\n      <tr mat-header-row *matHeaderRowDef=\"columnsToDisplay\"></tr>\n      <tr mat-row *matRowDef=\"let myRowData; columns: columnsToDisplay\"></tr>\n\n      <ng-container matColumnDef=\"ean\">\n        <th mat-header-cell *matHeaderCellDef class=\"text-err\" style=\"width: 20em\"> Fehlerhafte EAN </th>\n        <td mat-cell *matCellDef=\"let row\"> {{row.ean}} </td>\n      </ng-container>\n      <ng-container matColumnDef=\"message\">\n        <th mat-header-cell *matHeaderCellDef class=\"text-err\"> Meldung </th>\n        <td mat-cell *matCellDef=\"let row\"> {{row.message}} </td>\n      </ng-container>\n    </table>\n  </mat-card-content>\n\n</mat-card>\n"
+module.exports = "<mat-horizontal-stepper [linear]=\"true\" #stepper>\n  <mat-step [stepControl]=\"firstFormGroup\">\n    <form [formGroup]=\"firstFormGroup\">\n      <ng-template matStepLabel>Liste der EANs</ng-template>\n      <mat-form-field>\n        <textarea matInput placeholder=\"EANs einfügen\" formControlName=\"stylelistCtrl\" required matTextareaAutosize matAutosizeMaxRows=20 [(ngModel)]=\"input_stylelist\"></textarea>\n      </mat-form-field>\n      <div>\n        <button mat-flat-button color=\"primary\" matStepperNext>Next</button>\n      </div>\n    </form>\n  </mat-step>\n  <mat-step [stepControl]=\"secondFormGroup\">\n    <form [formGroup]=\"secondFormGroup\">\n      <ng-template matStepLabel>Avisedaten laden</ng-template>\n      <div>\n        <button mat-flat-button color=\"warn\" (click)=\"readList()\" >Artikel einlesen</button>\n      </div>\n    </form>\n      <div>\n\n        <h3>Ergebnis</h3>\n        <mat-progress-bar color=\"primary\" mode=\"determinante\" value=\"{{ ((this.stylelist.ok.length+this.stylelist.err.length)*100) / this.stylelist.all.length }}\"></mat-progress-bar>\n        <ul>\n          <li>Zeilen:{{this.stylelist.all.length}}</li>\n          <li>OK:{{this.stylelist.ok.length}} </li>\n          <li>Fehlerhaft:{{this.stylelist.err.length}}</li>\n\n        </ul>\n        <mat-card>\n          <mat-card-header>\n            <mat-card-title>Fehlerhafte EANs</mat-card-title>\n          </mat-card-header>\n          <mat-card-content>\n            <div>\n              <button mat-flat-button color=\"warn\" (click)=\"readSpecialList();\" >Fehlerhafte Artikel einlesen</button>\n            </div>\n            <div class=\"mat-error\">\n              <p *ngFor=\"let err of this.stylelist.special_err\">{{err.ean}}: {{err.message}}</p>\n            </div>\n            <table mat-table  class=\"mat-elevation-z8\"  [dataSource]=this.stylelist.err #tableErrors>\n              <tr mat-header-row *matHeaderRowDef=\"columnsToDisplay\"></tr>\n              <tr mat-row *matRowDef=\"let myRowData; columns: columnsToDisplay;\"></tr>\n              <ng-container matColumnDef=\"ean\">\n                <th mat-header-cell *matHeaderCellDef class=\"text-err\" style=\"width: 15em\"> Fehlerhafte EAN </th>\n                <td mat-cell *matCellDef=\"let row\"> {{row.ean}} </td>\n              </ng-container>\n              <ng-container matColumnDef=\"message\">\n                <th mat-header-cell *matHeaderCellDef class=\"text-err\" style=\"width: 15em\"> Meldung </th>\n                <td mat-cell *matCellDef=\"let row\"> {{row.message}} </td>\n              </ng-container>\n              <ng-container matColumnDef=\"productID\">\n                <th mat-header-cell *matHeaderCellDef class=\"text-err\"> ProductID </th>\n                <td mat-cell *matCellDef=\"let row;let i=index;\"><mat-form-field><input matInput [(ngModel)]=\"row.formdata.productId\"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>\n              </ng-container>\n              <ng-container matColumnDef=\"color\">\n                <th mat-header-cell *matHeaderCellDef class=\"text-err\"> ColorCode </th>\n                <td mat-cell *matCellDef=\"let row;let i=index;\"> <mat-form-field><input matInput [(ngModel)]=\"row.formdata.productColourId\"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>\n              </ng-container>\n              <ng-container matColumnDef=\"size\">\n                <th mat-header-cell *matHeaderCellDef class=\"text-err\"> Size </th>\n                <td mat-cell *matCellDef=\"let row;let i=index;\"> <mat-form-field><input matInput [(ngModel)]=\"row.formdata.computerSizeNumber\"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>\n              </ng-container>\n            </table>\n          </mat-card-content>\n        </mat-card>\n        <div>\n          <button mat-flat-button color=\"primary\" matStepperNext disabled=\"{{this.stylelist.ok.length<1}}\" (click)=\"writeCSV()\">Next</button>\n        </div>\n      </div>\n  </mat-step>\n  <mat-step [stepControl]=\"thirdFormGroup\">\n    <form [formGroup]=\"thirdFormGroup\">\n      <ng-template matStepLabel>Avise-CSV erstellen</ng-template>\n      <div>\n        <a [href]=\"this.safeURL\" mat-flat-button color=\"accent\" #downloadbutton download=\"cunda_avise.csv\">CSV für {{this.stylelist.ok.length}} Artikel herunterladen</a>\n        <!--<button mat-flat-button color=\"warn\" (click)=\"sendCSV()\" #sendbutton>CSV für {{this.stylelist.ok.length}} Artikel an Verteiler senden</button>-->\n      </div>\n    </form>\n\n  </mat-step>\n</mat-horizontal-stepper>\n\n"
 
 /***/ }),
 
@@ -385,13 +418,15 @@ var AviseCundaComponent = /** @class */ (function () {
             'colourPositionNumber', 'computerSizeNumber', 'customerSizeNumber', 'storyIdDescription', 'licenseIdDescription',
             'environmentalIdDescription', 'brandDescription', 'arvatoStatus', 'arvatoStatusName', 'dataSource'
         ];
-        this.columnsToDisplay = ['ean', 'message'];
+        this.columnsToDisplay = ['ean', 'message', 'productID', 'color', 'size'];
     }
     AviseCundaComponent.prototype.ngOnInit = function () {
         this.stylelist = {
             all: [],
             ok: [],
-            err: []
+            err: [],
+            special: [],
+            special_err: []
         };
         this.firstFormGroup = this._formBuilder.group({
             stylelistCtrl: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]
@@ -415,7 +450,9 @@ var AviseCundaComponent = /** @class */ (function () {
         this.stylelist = {
             all: [],
             ok: [],
-            err: []
+            err: [],
+            special: [],
+            special_err: []
         };
         this.stylelist.all = this.input_stylelist.split("\n");
         this.stylelist.all.forEach(function (ean, key, arr) {
@@ -426,15 +463,37 @@ var AviseCundaComponent = /** @class */ (function () {
                     _this.stylelist.ok.push(data);
                 }
                 else {
-                    _this.stylelist.err.push({ ean: ean, message: data.message });
+                    _this.stylelist.err.push({ ean: ean, message: data.message, formdata: { ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000' } });
                     _this.table.renderRows();
                 }
                 if (key === arr.length - 1) {
                     _this.writeCSV();
                 }
             }, function (error) {
-                _this.stylelist.err.push({ ean: ean, message: error.statusText });
+                _this.stylelist.err.push({ ean: ean, message: error.statusText, formdata: { ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000' } });
                 _this.table.renderRows();
+            });
+        });
+    };
+    AviseCundaComponent.prototype.readSpecialList = function () {
+        var _this = this;
+        this.stylelist.ok = [];
+        this.stylelist.special_err = [];
+        this.stylelist.err.forEach(function (item, key, arr) {
+            var formdata = item.formdata;
+            _this.serviceCunda.get_hub2(formdata)
+                .subscribe(function (data) {
+                if (data.length > 1) {
+                    _this.stylelist.ok.push(data);
+                }
+                else {
+                    _this.stylelist.special_err.push({ ean: formdata.ean, message: data.message });
+                }
+                if (key === arr.length - 1) {
+                    _this.writeCSV();
+                }
+            }, function (error) {
+                _this.stylelist.special_err.push({ ean: formdata.ean, message: error.statusText });
             });
         });
     };
@@ -492,7 +551,7 @@ var AviseCundaComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2hvbWUvaG9tZS5jb21wb25lbnQuY3NzIn0= */"
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiIuLi9zcmMvYXBwL2hvbWUvaG9tZS5jb21wb25lbnQuY3NzIn0= */"
 
 /***/ }),
 
@@ -555,7 +614,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".toolbar-spacer{\n    flex: 1 1 auto;\n}\n.mat-sidenav-container{\n    display: flex;\n    height: 100%;\n    flex-direction: column;\n\n}\n.mat-sidenav-contents {\n    padding: 5px;\n    height: calc(100vh - 65px);\n    box-sizing: border-box;\n}\n.mat-nav-list a {\n    color: #999;\n    font-size: 1.6em;\n    border-right: 2px solid white;\n}\n.mat-nav-list a.active {\n    text-shadow: 0 1px 1px #777, 0 -1px 1px #fff;\n    border-right: 2px solid grey;\n}\n.wrapper{\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvbmF2LXdyYXBwZXIvbmF2LXdyYXBwZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGVBQWU7Q0FDbEI7QUFDRDtJQUNJLGNBQWM7SUFDZCxhQUFhO0lBQ2IsdUJBQXVCOztDQUUxQjtBQUNEO0lBQ0ksYUFBYTtJQUNiLDJCQUEyQjtJQUMzQix1QkFBdUI7Q0FDMUI7QUFDRDtJQUNJLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsOEJBQThCO0NBQ2pDO0FBQ0Q7SUFDSSw2Q0FBNkM7SUFDN0MsNkJBQTZCO0NBQ2hDO0FBQ0Q7SUFDSSxjQUFjO0lBQ2QsdUJBQXVCO0lBQ3ZCLGFBQWE7O0NBRWhCIiwiZmlsZSI6InNyYy9hcHAvbmF2LXdyYXBwZXIvbmF2LXdyYXBwZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi50b29sYmFyLXNwYWNlcntcbiAgICBmbGV4OiAxIDEgYXV0bztcbn1cbi5tYXQtc2lkZW5hdi1jb250YWluZXJ7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblxufVxuLm1hdC1zaWRlbmF2LWNvbnRlbnRzIHtcbiAgICBwYWRkaW5nOiA1cHg7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMHZoIC0gNjVweCk7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbn1cbi5tYXQtbmF2LWxpc3QgYSB7XG4gICAgY29sb3I6ICM5OTk7XG4gICAgZm9udC1zaXplOiAxLjZlbTtcbiAgICBib3JkZXItcmlnaHQ6IDJweCBzb2xpZCB3aGl0ZTtcbn1cbi5tYXQtbmF2LWxpc3QgYS5hY3RpdmUge1xuICAgIHRleHQtc2hhZG93OiAwIDFweCAxcHggIzc3NywgMCAtMXB4IDFweCAjZmZmO1xuICAgIGJvcmRlci1yaWdodDogMnB4IHNvbGlkIGdyZXk7XG59XG4ud3JhcHBlcntcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgaGVpZ2h0OiAxMDAlO1xuXG59Il19 */"
+module.exports = ".toolbar-spacer{\n    flex: 1 1 auto;\n}\n.mat-sidenav-container{\n    display: flex;\n    height: 100%;\n    flex-direction: column;\n\n}\n.mat-sidenav-contents {\n    padding: 5px;\n    height: calc(100vh - 65px);\n    box-sizing: border-box;\n}\n.mat-nav-list a {\n    color: #999;\n    font-size: 1.6em;\n    border-right: 2px solid white;\n}\n.mat-nav-list a.active {\n    text-shadow: 0 1px 1px #777, 0 -1px 1px #fff;\n    border-right: 2px solid grey;\n}\n.wrapper{\n    display: flex;\n    flex-direction: column;\n    height: 100%;\n\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9hcHAvbmF2LXdyYXBwZXIvbmF2LXdyYXBwZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGVBQWU7Q0FDbEI7QUFDRDtJQUNJLGNBQWM7SUFDZCxhQUFhO0lBQ2IsdUJBQXVCOztDQUUxQjtBQUNEO0lBQ0ksYUFBYTtJQUNiLDJCQUEyQjtJQUMzQix1QkFBdUI7Q0FDMUI7QUFDRDtJQUNJLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsOEJBQThCO0NBQ2pDO0FBQ0Q7SUFDSSw2Q0FBNkM7SUFDN0MsNkJBQTZCO0NBQ2hDO0FBQ0Q7SUFDSSxjQUFjO0lBQ2QsdUJBQXVCO0lBQ3ZCLGFBQWE7O0NBRWhCIiwiZmlsZSI6Ii4uL3NyYy9hcHAvbmF2LXdyYXBwZXIvbmF2LXdyYXBwZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi50b29sYmFyLXNwYWNlcntcbiAgICBmbGV4OiAxIDEgYXV0bztcbn1cbi5tYXQtc2lkZW5hdi1jb250YWluZXJ7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcblxufVxuLm1hdC1zaWRlbmF2LWNvbnRlbnRzIHtcbiAgICBwYWRkaW5nOiA1cHg7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMHZoIC0gNjVweCk7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbn1cbi5tYXQtbmF2LWxpc3QgYSB7XG4gICAgY29sb3I6ICM5OTk7XG4gICAgZm9udC1zaXplOiAxLjZlbTtcbiAgICBib3JkZXItcmlnaHQ6IDJweCBzb2xpZCB3aGl0ZTtcbn1cbi5tYXQtbmF2LWxpc3QgYS5hY3RpdmUge1xuICAgIHRleHQtc2hhZG93OiAwIDFweCAxcHggIzc3NywgMCAtMXB4IDFweCAjZmZmO1xuICAgIGJvcmRlci1yaWdodDogMnB4IHNvbGlkIGdyZXk7XG59XG4ud3JhcHBlcntcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgaGVpZ2h0OiAxMDAlO1xuXG59Il19 */"
 
 /***/ }),
 
@@ -674,7 +733,7 @@ var OwnMaterialModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\nmat-card{\n    width: 50vw;\n    background: hsla(0,0%,100%, .5);\n    position:absolute;\n    left:50%;\n    top:50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n    text-align:center;\n\n\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvcGFnZS1ub3QtZm91bmQvcGFnZS1ub3QtZm91bmQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQ0E7SUFDSSxZQUFZO0lBQ1osZ0NBQWdDO0lBQ2hDLGtCQUFrQjtJQUNsQixTQUFTO0lBQ1QsUUFBUTtJQUNSLHlDQUFpQztZQUFqQyxpQ0FBaUM7SUFDakMsa0JBQWtCOzs7Q0FHckIiLCJmaWxlIjoic3JjL2FwcC9wYWdlLW5vdC1mb3VuZC9wYWdlLW5vdC1mb3VuZC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiXG5tYXQtY2FyZHtcbiAgICB3aWR0aDogNTB2dztcbiAgICBiYWNrZ3JvdW5kOiBoc2xhKDAsMCUsMTAwJSwgLjUpO1xuICAgIHBvc2l0aW9uOmFic29sdXRlO1xuICAgIGxlZnQ6NTAlO1xuICAgIHRvcDo1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgdGV4dC1hbGlnbjpjZW50ZXI7XG5cblxufSJdfQ== */"
+module.exports = "\nmat-card{\n    width: 50vw;\n    background: hsla(0,0%,100%, .5);\n    position:absolute;\n    left:50%;\n    top:50%;\n    -webkit-transform: translate(-50%, -50%);\n            transform: translate(-50%, -50%);\n    text-align:center;\n\n\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9hcHAvcGFnZS1ub3QtZm91bmQvcGFnZS1ub3QtZm91bmQuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQ0E7SUFDSSxZQUFZO0lBQ1osZ0NBQWdDO0lBQ2hDLGtCQUFrQjtJQUNsQixTQUFTO0lBQ1QsUUFBUTtJQUNSLHlDQUFpQztZQUFqQyxpQ0FBaUM7SUFDakMsa0JBQWtCOzs7Q0FHckIiLCJmaWxlIjoiLi4vc3JjL2FwcC9wYWdlLW5vdC1mb3VuZC9wYWdlLW5vdC1mb3VuZC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiXG5tYXQtY2FyZHtcbiAgICB3aWR0aDogNTB2dztcbiAgICBiYWNrZ3JvdW5kOiBoc2xhKDAsMCUsMTAwJSwgLjUpO1xuICAgIHBvc2l0aW9uOmFic29sdXRlO1xuICAgIGxlZnQ6NTAlO1xuICAgIHRvcDo1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgdGV4dC1hbGlnbjpjZW50ZXI7XG5cblxufSJdfQ== */"
 
 /***/ }),
 
