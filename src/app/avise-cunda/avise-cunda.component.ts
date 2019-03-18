@@ -34,7 +34,7 @@ export class AviseCundaComponent implements OnInit {
         'colourPositionNumber','computerSizeNumber','customerSizeNumber','storyIdDescription','licenseIdDescription',
         'environmentalIdDescription','brandDescription','arvatoStatus','arvatoStatusName','dataSource'
     ];
-    columnsToDisplay = ['ean', 'message'];
+    columnsToDisplay = ['ean', 'message', 'productID', 'color', 'size'];
 
     constructor(private _formBuilder: FormBuilder, private serviceCunda: AviseCundaService, private sanitizer: DomSanitizer ) {
     }
@@ -43,7 +43,9 @@ export class AviseCundaComponent implements OnInit {
         this.stylelist = {
             all: [],
             ok: [],
-            err: []
+            err: [],
+            special: [],
+            special_err: []
         };
 
         this.firstFormGroup = this._formBuilder.group({
@@ -72,7 +74,9 @@ export class AviseCundaComponent implements OnInit {
         this.stylelist = {
             all: [],
             ok: [],
-            err: []
+            err: [],
+            special: [],
+            special_err: []
         };
         this.stylelist.all = this.input_stylelist.split("\n");
         this.stylelist.all.forEach((ean,key,arr) => {
@@ -83,7 +87,7 @@ export class AviseCundaComponent implements OnInit {
                             if (data.length > 1) {
                                 this.stylelist.ok.push(data);
                             } else {
-                                this.stylelist.err.push({ean: ean, message: data.message});
+                                this.stylelist.err.push({ean: ean, message: data.message, formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
                                 this.table.renderRows();
                             }
 
@@ -92,13 +96,35 @@ export class AviseCundaComponent implements OnInit {
                             }
                     },
                 error => {
-                        this.stylelist.err.push({ean: ean, message: error.statusText});
+                        this.stylelist.err.push({ean: ean, message: error.statusText, formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
                     this.table.renderRows();
                     });
         });
 
     }
+    readSpecialList() {
+        this.stylelist.ok = [];
+        this.stylelist.special_err = [];
+        this.stylelist.err.forEach((item,key,arr) => {
+            const formdata = item.formdata;
+            this.serviceCunda.get_hub2(formdata)
+                .subscribe(
+                    (data: any) => {
+                        if (data.length > 1) {
+                            this.stylelist.ok.push(data);
+                        } else {
+                            this.stylelist.special_err.push({ean: formdata.ean, message: data.message});
+                        }
+                        if (key === arr.length - 1) {
+                            this.writeCSV();
+                        }
+                    },
+                    error => {
+                        this.stylelist.special_err.push({ean: formdata.ean, message: error.statusText});
+                    });
+        });
 
+    }
     writeCSV(){
         this.csv_string = "";
         if (!this.csv_string.match(/^data:text\/csv/i)) {

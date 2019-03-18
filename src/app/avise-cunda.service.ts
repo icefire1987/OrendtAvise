@@ -77,5 +77,40 @@ export class AviseCundaService {
                 })
             );
     }
+    get_hub2(data) {
+        return this.http.get(
+            this.url_hub2_product + data.productId +
+            this.url_hub2_color + data.productColourId +
+            this.url_hub2_size + data.computerSizeNumber
+        )
+            .map((res2: any) => {
+                return [
+                    data.ean,
+                    res2.class,
+                    res2.code,
+                    data.ean.substr(-11, 6),
+                    data.productId,
+                    data.productColourId,
+                    '',
+                    res2.advertNumber,
+                    "", "", "", "",
+                    res2.advertDate,
+                    res2.division,
+                    res2.downWorld,
+                    res2.category,
+                    JSON.stringify(res2.erpAdditionalInformation),
+                    res2.pimProductName,
+                    "",
+                    res2.world,
+                    data.productColourId,
+                    data.computerSizeNumber,
+                    res2.customerSize,
+                    "", "",
+                    res2.erpProductDescription,
+                    "", "115", "NewArticle",
+                    ""
+                ];
+            });
+    }
 
 }
