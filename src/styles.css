@@ -11,3 +11,19 @@ html, body {
 .text-err{
     color: chocolate;
 }
+.text-success{
+    color: forestgreen;
+}
+
+.mat-card {
+    background: lavender;
+}
+
+.gridList {
+    display: flex;
+    flex-direction: column;
+}
+/* Row Gap */
+.gridList > *:not(:last-child) {
+    margin-bottom: 32px;
+}

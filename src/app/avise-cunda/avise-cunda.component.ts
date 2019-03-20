@@ -19,32 +19,45 @@ export class AviseCundaComponent implements OnInit {
     firstFormGroup: FormGroup;
     secondFormGroup: FormGroup;
     thirdFormGroup: FormGroup;
-    stylelist: any = {
-        all: [],
-        ok: [],
-        err: []
-    };
+
+    stylelist: {
+        all: string[],
+        ok: string[][],
+        err: {ean: string, message: string, formdata: any}[],
+        special_err: {ean: string, message: string}[]
+    } ;
+    special_requestDone: boolean;
     input_stylelist: string;
     csv_string: string;
     csvdata: string;
     safeURL: SafeUrl;
-    fields: any[] = ['barcode','classificationNumber','codeNumber','itemNumber','productId',
-        'productColourId','pricedProductId','advertNumber','outfitId','photoId','viewId','colourId',
-        'advertDate','division','downwelt','kategorie','notes','productName','webshopBeschreibung','welt',
-        'colourPositionNumber','computerSizeNumber','customerSizeNumber','storyIdDescription','licenseIdDescription',
-        'environmentalIdDescription','brandDescription','arvatoStatus','arvatoStatusName','dataSource'
+    fields: any[] = ['barcode', 'classificationNumber', 'codeNumber', 'itemNumber', 'productId',
+        'productColourId', 'pricedProductId', 'advertNumber', 'outfitId', 'photoId', 'viewId', 'colourId',
+        'advertDate', 'division', 'downwelt', 'kategorie', 'notes', 'productName', 'webshopBeschreibung', 'welt',
+        'colourPositionNumber', 'computerSizeNumber', 'customerSizeNumber', 'storyIdDescription', 'licenseIdDescription',
+        'environmentalIdDescription', 'brandDescription', 'arvatoStatus', 'arvatoStatusName', 'dataSource'
     ];
     columnsToDisplay = ['ean', 'message', 'productID', 'color', 'size'];
 
+
+
     constructor(private _formBuilder: FormBuilder, private serviceCunda: AviseCundaService, private sanitizer: DomSanitizer ) {
     }
+    static pad_with_zeroes(number, length) {
 
+        let my_string = '' + number;
+        while (my_string.length < length) {
+            my_string = '0' + my_string;
+        }
+
+        return my_string;
+
+    }
     ngOnInit() {
         this.stylelist = {
             all: [],
             ok: [],
             err: [],
-            special: [],
             special_err: []
         };
 
@@ -57,37 +70,32 @@ export class AviseCundaComponent implements OnInit {
         this.thirdFormGroup = this._formBuilder.group({
             writeStylelistCtrl: ['']
         });
-    }
-
-    pad_with_zeroes(number, length) {
-
-        let my_string = '' + number;
-        while (my_string.length < length) {
-            my_string = '0' + my_string;
-        }
-
-        return my_string;
 
     }
-
     readList() {
         this.stylelist = {
             all: [],
             ok: [],
             err: [],
-            special: [],
             special_err: []
         };
-        this.stylelist.all = this.input_stylelist.split("\n");
-        this.stylelist.all.forEach((ean,key,arr) => {
-            ean = this.pad_with_zeroes(ean,13);
+        this.stylelist.all = this.input_stylelist.split('\n');
+        this.stylelist.all = this.stylelist.all.filter(ean => ean !== '');
+        this.stylelist.all.forEach((ean, key, arr) => {
+            if (ean.length < 1) {
+                return;
+            }
+            ean = AviseCundaComponent.pad_with_zeroes(ean, 13);
             this.serviceCunda.get(ean)
                 .subscribe(
                     (data: any) => {
                             if (data.length > 1) {
                                 this.stylelist.ok.push(data);
                             } else {
-                                this.stylelist.err.push({ean: ean, message: data.message, formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
+                                this.stylelist.err.push({
+                                    ean: ean,
+                                    message: data.message,
+                                    formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
                                 this.table.renderRows();
                             }
 
@@ -96,16 +104,20 @@ export class AviseCundaComponent implements OnInit {
                             }
                     },
                 error => {
-                        this.stylelist.err.push({ean: ean, message: error.statusText, formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
+                        this.stylelist.err.push({
+                            ean: ean,
+                            message: error.statusText,
+                            formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
                     this.table.renderRows();
                     });
         });
 
     }
     readSpecialList() {
+        this.special_requestDone = false;
         this.stylelist.ok = [];
         this.stylelist.special_err = [];
-        this.stylelist.err.forEach((item,key,arr) => {
+        this.stylelist.err.forEach((item, key, arr) => {
             const formdata = item.formdata;
             this.serviceCunda.get_hub2(formdata)
                 .subscribe(
@@ -117,6 +129,7 @@ export class AviseCundaComponent implements OnInit {
                         }
                         if (key === arr.length - 1) {
                             this.writeCSV();
+                            this.special_requestDone = true;
                         }
                     },
                     error => {
@@ -125,8 +138,8 @@ export class AviseCundaComponent implements OnInit {
         });
 
     }
-    writeCSV(){
-        this.csv_string = "";
+    writeCSV() {
+        this.csv_string = '';
         if (!this.csv_string.match(/^data:text\/csv/i)) {
             this.csv_string = 'data:text/csv;charset=utf-8,' + this.csv_string;
         }
@@ -141,15 +154,13 @@ export class AviseCundaComponent implements OnInit {
             this.csv_string += '\n';
         });
 
-        if (this.csv_string == null) return;
+        if (this.csv_string == null) { return; }
 
         this.csvdata = encodeURI(this.csv_string);
         this.safeURL = this.sanitizer.bypassSecurityTrustUrl(this.csvdata);
     }
 
     sendCSV() {
-        console.info("cooming soon");
-
-
+        // coming soon
     }
 }

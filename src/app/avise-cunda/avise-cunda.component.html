@@ -13,61 +13,97 @@
   <mat-step [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Avisedaten laden</ng-template>
-      <div>
-        <button mat-flat-button color="warn" (click)="readList()" >Artikel einlesen</button>
-      </div>
     </form>
-      <div>
+    <div class="gridList">
 
-        <h3>Ergebnis</h3>
-        <mat-progress-bar color="primary" mode="determinante" value="{{ ((this.stylelist.ok.length+this.stylelist.err.length)*100) / this.stylelist.all.length }}"></mat-progress-bar>
-        <ul>
-          <li>Zeilen:{{this.stylelist.all.length}}</li>
-          <li>OK:{{this.stylelist.ok.length}} </li>
-          <li>Fehlerhaft:{{this.stylelist.err.length}}</li>
-
-        </ul>
         <mat-card>
+          <mat-card-header>
+            <mat-card-title>
+              Ergebnis
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-progress-bar color="primary" mode="determinante" value="{{ (this.stylelist.ok.length>0) ? ( ((this.stylelist.ok.length+this.stylelist.err.length)*100) / this.stylelist.all.length ) : (0) }}"></mat-progress-bar>
+            <ul>
+              <li>Zeilen:{{this.stylelist.all.length}}</li>
+              <li>OK:{{this.stylelist.ok.length}} </li>
+              <li>Fehlerhaft:{{this.stylelist.err.length}}</li>
+
+            </ul>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-flat-button color="accent" (click)="readList()" >Artikel einlesen</button>
+          </mat-card-actions>
+        </mat-card>
+
+
+
+        <mat-card *ngIf="this.stylelist.err.length>0">
           <mat-card-header>
             <mat-card-title>Fehlerhafte EANs</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div>
-              <button mat-flat-button color="warn" (click)="readSpecialList();" >Fehlerhafte Artikel einlesen</button>
+              <div class="mat-error">
+                <p *ngFor="let err of this.stylelist.special_err">{{err.ean}}: {{err.message}}</p>
+              </div>
+            <div class="text-success" *ngIf="this.special_requestDone">
+              <p *ngIf="this.stylelist.special_err.length==0">Abfrage erfolgreich</p>
             </div>
-            <div class="mat-error">
-              <p *ngFor="let err of this.stylelist.special_err">{{err.ean}}: {{err.message}}</p>
-            </div>
-            <table mat-table  class="mat-elevation-z8"  [dataSource]=this.stylelist.err #tableErrors>
-              <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-              <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay;"></tr>
-              <ng-container matColumnDef="ean">
-                <th mat-header-cell *matHeaderCellDef class="text-err" style="width: 15em"> Fehlerhafte EAN </th>
-                <td mat-cell *matCellDef="let row"> {{row.ean}} </td>
-              </ng-container>
-              <ng-container matColumnDef="message">
-                <th mat-header-cell *matHeaderCellDef class="text-err" style="width: 15em"> Meldung </th>
-                <td mat-cell *matCellDef="let row"> {{row.message}} </td>
-              </ng-container>
-              <ng-container matColumnDef="productID">
-                <th mat-header-cell *matHeaderCellDef class="text-err"> ProductID </th>
-                <td mat-cell *matCellDef="let row;let i=index;"><mat-form-field><input matInput [(ngModel)]="row.formdata.productId"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>
-              </ng-container>
-              <ng-container matColumnDef="color">
-                <th mat-header-cell *matHeaderCellDef class="text-err"> ColorCode </th>
-                <td mat-cell *matCellDef="let row;let i=index;"> <mat-form-field><input matInput [(ngModel)]="row.formdata.productColourId"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>
-              </ng-container>
-              <ng-container matColumnDef="size">
-                <th mat-header-cell *matHeaderCellDef class="text-err"> Size </th>
-                <td mat-cell *matCellDef="let row;let i=index;"> <mat-form-field><input matInput [(ngModel)]="row.formdata.computerSizeNumber"><mat-icon matSuffix>mode_edit</mat-icon></mat-form-field></td>
-              </ng-container>
-            </table>
+              <table mat-table  class="mat-elevation-z8"  [dataSource]=this.stylelist.err #tableErrors>
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplay;"></tr>
+                <ng-container matColumnDef="ean">
+                  <th mat-header-cell *matHeaderCellDef class="text-err" style="width: 15em"> Fehlerhafte EAN </th>
+                  <td mat-cell *matCellDef="let row"> {{row.ean}} </td>
+                </ng-container>
+                <ng-container matColumnDef="message">
+                  <th mat-header-cell *matHeaderCellDef class="text-err" style="width: 15em"> Meldung </th>
+                  <td mat-cell *matCellDef="let row"> {{row.message}} </td>
+                </ng-container>
+                <ng-container matColumnDef="productID">
+                  <th mat-header-cell *matHeaderCellDef class="text-err"> ProductID </th>
+                  <td mat-cell *matCellDef="let row;let i=index;">
+                    <mat-form-field>
+                      <input matInput  [(ngModel)]="row.formdata.productId" [maxLength]="7">
+                      <mat-icon matSuffix>mode_edit</mat-icon>
+                    </mat-form-field>
+                    <div>
+                      <mat-error *ngIf="row.formdata.productId.length<7">ProductId 7-stellig</mat-error>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="color">
+                  <th mat-header-cell *matHeaderCellDef class="text-err"> ColorCode </th>
+                  <td mat-cell *matCellDef="let row;let i=index;">
+                    <mat-form-field>
+                      <input matInput [(ngModel)]="row.formdata.productColourId">
+                      <mat-icon matSuffix>mode_edit</mat-icon>
+                    </mat-form-field></td>
+                </ng-container>
+                <ng-container matColumnDef="size">
+                  <th mat-header-cell *matHeaderCellDef class="text-err"> Size </th>
+                  <td mat-cell *matCellDef="let row;let i=index;">
+                    <mat-form-field>
+                      <input matInput  [(ngModel)]="row.formdata.computerSizeNumber" [maxLength]="3">
+                      <mat-icon matSuffix>mode_edit</mat-icon>
+                    </mat-form-field>
+                    <div>
+                    <mat-error *ngIf="row.formdata.computerSizeNumber.length<3">Größe 3-stellig</mat-error>
+                    </div>
+                  </td>
+                </ng-container>
+              </table>
+
           </mat-card-content>
+          <mat-card-actions>
+            <button mat-flat-button color="accent" (click)="readSpecialList();" >Fehlerhafte Artikel einlesen</button>
+          </mat-card-actions>
         </mat-card>
-        <div>
-          <button mat-flat-button color="primary" matStepperNext disabled="{{this.stylelist.ok.length<1}}" (click)="writeCSV()">Next</button>
-        </div>
+      <div>
+        <button mat-flat-button color="primary" matStepperNext disabled="{{this.stylelist.ok.length<1}}" (click)="writeCSV()">Next</button>
       </div>
+    </div>
+
   </mat-step>
   <mat-step [stepControl]="thirdFormGroup">
     <form [formGroup]="thirdFormGroup">
