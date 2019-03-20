@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AviseCundaService} from '../avise-cunda.service';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
@@ -11,10 +11,10 @@ import {MatTable} from '@angular/material';
   styleUrls: ['./avise-cunda.component.css']
 })
 
-export class AviseCundaComponent implements OnInit {
-
-    @ViewChild('downloadbutton') downloadbutton: ElementRef;
+export class AviseCundaComponent implements OnInit, AfterViewInit {
     @ViewChild('tableErrors') table: MatTable<any>;
+    @ViewChild('downloadbutton') downloadbutton: ElementRef;
+
     isLinear = false;
     firstFormGroup: FormGroup;
     secondFormGroup: FormGroup;
@@ -72,6 +72,7 @@ export class AviseCundaComponent implements OnInit {
         });
 
     }
+
     readList() {
         this.stylelist = {
             all: [],
@@ -96,7 +97,10 @@ export class AviseCundaComponent implements OnInit {
                                     ean: ean,
                                     message: data.message,
                                     formdata: {ean: ean, productId: 0, productColourId: 0, computerSizeNumber: '000'}});
-                                this.table.renderRows();
+                                if (this.table) {
+                                    this.table.renderRows();
+                                }
+
                             }
 
                             if (key === arr.length - 1) {
@@ -136,7 +140,6 @@ export class AviseCundaComponent implements OnInit {
                         this.stylelist.special_err.push({ean: formdata.ean, message: error.statusText});
                     });
         });
-
     }
     writeCSV() {
         this.csv_string = '';
