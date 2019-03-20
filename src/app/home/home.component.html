@@ -1,24 +1,70 @@
 <h1>Anleitung</h1>
 <h2>Menüpnkt C&A</h2>
 
-<h3>1.Schritt (Liste der EANs)</h3>
-<ul>
-  <li>Liste mit EANs kopieren und in das Textfeld einfügen</li>
-  <li>"Next" klickn für nächsten Prozessschritt</li>
-  <li>Formatbeispiel: 0048741281104</li>
-</ul>
+<mat-list>
+  <h3 mat-subheader>1. Schritt (Liste der EANs)</h3>
+    <mat-list-item>
+      <mat-icon mat-list-icon>info</mat-icon>
+      <h4 mat-line>Liste mit EANs kopieren und in das Textfeld einfügen</h4>
+      <p mat-line>In jeder Zeile darf nur eine EAN stehen. Formatbeispiel: 0048741281104</p>
+    </mat-list-item>
 
-<h3>2.Schritt (Avisedaten laden)</h3>
-<ul>
-  <li>Ein Klick auf "Artikel einlesen" fragt die EANs bei beiden C&A-Schnittstellen an. Fehler werden entsprechend in der unteren Tabelle aufgeführt.</li>
-  <li>Bad Request: z.B. EAN im falschen Format<br>Server Error: z.B. Unbekannte EAN</li>
-  <li>Wenn min. 1 korrekter Datensatz gefunden wurde, ist "next" klickbar</li>
-  <li>"Next" klicken für nächsten Prozessschritt</li>
-</ul>
+    <mat-list-item>
+      <mat-icon mat-list-icon>touch_app</mat-icon>
+      <h4 mat-line>"Next" klicken für nächsten Prozessschritt</h4>
+    </mat-list-item>
 
-<h3>3.Schritt (CSV erstellen)</h3>
-<ul>
-  <li>Ein Klick auf "CSV herunterladen" erstellt eine csv-Datei die in das Downloadverzeichnis geladen wird.</li>
-  <li>Fehlerhafte EANs sind nicht in der CSV enthalten</li>
-  <li>Die CSV kann in das FilemakerTool für C&A importiert werden</li>
-</ul>
+  <mat-divider></mat-divider>
+  <h3 mat-subheader>2.Schritt (Avisedaten laden)</h3>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>touch_app</mat-icon>
+      <h4 mat-line>"Artikel einlesen" fragt die EANs bei beiden C&A-Schnittstellen an.</h4>
+      <p mat-line>Es werden zunächst alle Zeilen berechnet. Korrekte Datensätze werden unter "OK" summiert, Fehlerhafte werden unter "Fehlerhaft" summiert.</p>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>error</mat-icon>
+      <h4 mat-line>Fehler werden entsprechend in der unteren Tabelle aufgeführt.</h4>
+      <p mat-line>Bad Request: z.B. EAN im falschen Format<br>Server Error: z.B. Unbekannte EAN</p>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>info</mat-icon>
+      <h4 mat-line>Um dennoch die Avise für Fehlerhafte Artikel zu erstellen müssen wir manuelle 3 Datenfelder je Artikel füllen.</h4>
+      <p mat-line>Die Informationen stehen in der Warenausgangsdatei von Stylehouse und müssen für jeden Artikel manuell eingetragen werden.</p>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>touch_app</mat-icon>
+      <h4 mat-line>"Fehelrhafte Artikel einlesen" fragt nach dem Ausfüllen aller gewünschten Artikel die Stammdaten an und fügt im Erfolgsfall diese der Avise hinzu</h4>
+      <p mat-line>"OK"-Zähler wird größer.</p>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>error</mat-icon>
+      <h4 mat-line>Fehler werden in Textform über der Tabelle sichtbar.</h4>
+      <p mat-line>Diese können nicht der Avise hinzugefügt werden</p>
+    </mat-list-item>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>info</mat-icon>
+      <h4 mat-line>Wenn min. 1 korrekter Datensatz gefunden wurde, ist "next" klickbar</h4>
+      <p mat-line>Sei es direkt nach em ersten einlesen oder nach der manuellen Fehlerkorrektur</p>
+    </mat-list-item>
+
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>touch_app</mat-icon>
+      <h4 mat-line>"Next" klicken für nächsten Prozessschritt</h4>
+    </mat-list-item>
+
+  <mat-divider></mat-divider>
+  <h3 mat-subheader>3. Schritt (Avise-CSV erstellen)</h3>
+
+    <mat-list-item>
+      <mat-icon mat-list-icon>touch_app</mat-icon>
+      <h4 mat-line>"CSV herunterladen" erstellt eine csv-Datei die in das Downloadverzeichnis geladen wird</h4>
+      <p mat-line>Die CSV kann in das FilemakerTool für C&A importiert werden</p>
+    </mat-list-item>
+</mat-list>

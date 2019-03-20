@@ -11,7 +11,7 @@ import {MatTable} from '@angular/material';
   styleUrls: ['./avise-cunda.component.css']
 })
 
-export class AviseCundaComponent implements OnInit, AfterViewInit {
+export class AviseCundaComponent implements OnInit {
     @ViewChild('tableErrors') table: MatTable<any>;
     @ViewChild('downloadbutton') downloadbutton: ElementRef;
 
