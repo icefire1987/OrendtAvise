@@ -35,8 +35,6 @@
             <button mat-flat-button color="accent" (click)="readList()" >Artikel einlesen</button>
           </mat-card-actions>
         </mat-card>
-      #{{this.stylelist.err.length}}+
-      #{{this.stylelist.err.length<1}}+
       <mat-card *ngIf="this.stylelist.err.length>0">
         <mat-card-header>
            <mat-card-title>Fehlerhafte EANs</mat-card-title>
@@ -92,7 +90,6 @@
                  </td>
                </ng-container>
              </table>
-
          </mat-card-content>
          <mat-card-actions>
            <button mat-flat-button color="accent" (click)="readSpecialList();" >Fehlerhafte Artikel einlesen</button>
@@ -108,10 +105,8 @@
      <ng-template matStepLabel>Avise-CSV erstellen</ng-template>
      <div>
        <a [href]="this.safeURL" mat-flat-button color="accent" #downloadbutton download="cunda_avise.csv">CSV für {{this.stylelist.ok.length}} Artikel herunterladen</a>
-       <!--<button mat-flat-button color="warn" (click)="sendCSV()" #sendbutton>CSV für {{this.stylelist.ok.length}} Artikel an Verteiler senden</button>-->
       </div>
     </form>
-
   </mat-step>
 </mat-horizontal-stepper>
 
